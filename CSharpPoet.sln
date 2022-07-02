@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpPoet", "CSharpPoet\CSharpPoet.csproj", "{1E56A60E-FD74-4046-BFC5-1B936F91D245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpPoet.Tests", "CSharpPoet.Tests\CSharpPoet.Tests.csproj", "{000B670A-6583-40C3-B2BE-C165BE151E31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E56A60E-FD74-4046-BFC5-1B936F91D245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E56A60E-FD74-4046-BFC5-1B936F91D245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E56A60E-FD74-4046-BFC5-1B936F91D245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E56A60E-FD74-4046-BFC5-1B936F91D245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{000B670A-6583-40C3-B2BE-C165BE151E31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{000B670A-6583-40C3-B2BE-C165BE151E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{000B670A-6583-40C3-B2BE-C165BE151E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{000B670A-6583-40C3-B2BE-C165BE151E31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
