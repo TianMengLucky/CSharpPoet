@@ -8,6 +8,7 @@ public class CSharpField : CSharpType.IMember
 
     public bool IsStatic { get; set; }
     public bool IsReadonly { get; set; }
+    public bool IsConst { get; set; }
 
     public string? DefaultValue { get; set; }
 
@@ -32,6 +33,7 @@ public class CSharpField : CSharpType.IMember
 
         if (IsStatic) writer.Write("static ");
         if (IsReadonly) writer.Write("readonly ");
+        if (IsConst) writer.Write("const ");
 
         writer.Write(Type);
         writer.Write(' ');

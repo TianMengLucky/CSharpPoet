@@ -13,6 +13,7 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
     public IList<CSharpParameter> Parameters { get; set; } = new List<CSharpParameter>();
 
     public bool IsStatic { get; set; }
+    public bool IsPartial { get; set; }
     public bool IsExtern { get; set; }
 
     public BodyType BodyType { get; set; } = BodyType.Block;
@@ -44,6 +45,7 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
         writer.Write(' ');
 
         if (IsStatic) writer.Write("static ");
+        if (IsPartial) writer.Write("partial ");
         if (IsExtern) writer.Write("extern ");
 
         writer.Write(ReturnType);
