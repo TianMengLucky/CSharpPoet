@@ -15,6 +15,7 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
     public bool IsStatic { get; set; }
     public bool IsExtern { get; set; }
 
+    public BodyType BodyType { get; set; } = BodyType.Block;
     public Action<CodeWriter>? Body { get; set; }
 
     public CSharpMethod(Visibility visibility, string returnType, string name)
@@ -60,10 +61,18 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
         }
         else
         {
-            writer.WriteLine();
-            using (writer.Block())
+            if (BodyType == BodyType.Block)
             {
-                Body.Invoke(writer);
+                writer.WriteLine();
+                using (writer.Block())
+                {
+                    Body(writer);
+                }
+            }
+            else if (BodyType == BodyType.Expression)
+            {
+                writer.Write(" => ");
+                Body(writer);
             }
         }
     }

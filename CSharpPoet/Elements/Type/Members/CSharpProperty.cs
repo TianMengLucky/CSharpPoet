@@ -17,7 +17,7 @@ public class CSharpProperty : CSharpType.IMember, IHasSeparator
 
     public string? DefaultValue { get; set; }
 
-    public bool IsMultiline => Getter is { IsMultiline: true } || Setter is { IsMultiline: true };
+    public bool IsMultiline => Getter is { BodyType: BodyType.Block } || Setter is { BodyType: BodyType.Block };
 
     public CSharpProperty(Visibility visibility, string type, string name)
     {
@@ -47,7 +47,7 @@ public class CSharpProperty : CSharpType.IMember, IHasSeparator
 
         writer.Write(' ');
 
-        if (Getter is { Body: { }, IsMultiline: false } && Setter == null)
+        if (Getter is { Body: { }, BodyType: BodyType.Expression } && Setter == null)
         {
             writer.Write("=> ");
             Getter.Body(writer);
@@ -114,7 +114,7 @@ public class CSharpProperty : CSharpType.IMember, IHasSeparator
     {
         public Visibility? Visibility { get; set; }
 
-        public bool IsMultiline { get; set; }
+        public BodyType BodyType { get; set; } = BodyType.Expression;
 
         public Action<CodeWriter>? Body { get; set; }
 
@@ -141,18 +141,18 @@ public class CSharpProperty : CSharpType.IMember, IHasSeparator
 
             if (Body != null)
             {
-                if (IsMultiline)
+                if (BodyType == BodyType.Expression)
+                {
+                    writer.Write(" => ");
+                    Body(writer);
+                }
+                else
                 {
                     writer.WriteLine();
                     using (writer.Block())
                     {
                         Body(writer);
                     }
-                }
-                else
-                {
-                    writer.Write(" => ");
-                    Body(writer);
                 }
             }
             else
