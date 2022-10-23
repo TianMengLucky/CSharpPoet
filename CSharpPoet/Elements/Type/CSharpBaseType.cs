@@ -7,7 +7,7 @@ public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFil
 {
     string IHasSeparator.Separator => "\n";
 
-    public IList<CSharpAttribute> Attributes { get; init; } = new List<CSharpAttribute>();
+    public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
 
     public Visibility Visibility { get; set; }
 

@@ -2,7 +2,7 @@ namespace CSharpPoet;
 
 public abstract class CSharpType : CSharpBaseType<CSharpType.IMember>
 {
-    public IList<string> Extends { get; init; } = new List<string>();
+    public IList<string> Extends { get; set; } = new List<string>();
 
     protected CSharpType(Visibility visibility, string name) : base(visibility, name)
     {

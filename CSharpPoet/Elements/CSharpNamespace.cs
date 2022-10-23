@@ -4,7 +4,7 @@ public class CSharpNamespace : CSharpMember<CSharpFile.IMember>, CSharpFile.IMem
 {
     public string Name { get; set; }
 
-    public IList<CSharpUsing> Usings { get; init; } = new List<CSharpUsing>();
+    public IList<CSharpUsing> Usings { get; set; } = new List<CSharpUsing>();
 
     public CSharpNamespace(string name)
     {

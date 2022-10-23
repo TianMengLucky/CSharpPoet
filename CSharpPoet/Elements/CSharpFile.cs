@@ -13,7 +13,7 @@ public class CSharpFile : CSharpMember<CSharpFile.IMember>
     /// <summary>
     /// Gets usings.
     /// </summary>
-    public IList<CSharpUsing> Usings { get; init; } = new List<CSharpUsing>();
+    public IList<CSharpUsing> Usings { get; set; } = new List<CSharpUsing>();
 
     /// <summary>
     /// Gets or sets namespace.

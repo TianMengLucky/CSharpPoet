@@ -67,7 +67,7 @@ public abstract class CSharpMember<TMember> : ICSharpMember, IEnumerable<TMember
     /// <summary>
     /// Gets or sets the children members.
     /// </summary>
-    public IList<TMember> Members { get; init; } = new List<TMember>();
+    public IList<TMember> Members { get; set; } = new List<TMember>();
 
     /// <inheritdoc />
     public IEnumerator<TMember> GetEnumerator()

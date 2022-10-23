@@ -4,13 +4,13 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
 {
     string IHasSeparator.Separator => "\n";
 
-    public IList<CSharpAttribute> Attributes { get; init; } = new List<CSharpAttribute>();
+    public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
 
     public Visibility Visibility { get; set; }
     public string ReturnType { get; set; }
     public string Name { get; set; }
 
-    public IList<CSharpParameter> Parameters { get; init; } = new List<CSharpParameter>();
+    public IList<CSharpParameter> Parameters { get; set; } = new List<CSharpParameter>();
 
     public bool IsStatic { get; set; }
     public bool IsExtern { get; set; }
@@ -73,7 +73,7 @@ public class CSharpParameter : ICSharpMember, IHasAttributes, IHasSeparator
 {
     string IHasSeparator.Separator => ", ";
 
-    public IList<CSharpAttribute> Attributes { get; init; } = new List<CSharpAttribute>();
+    public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
 
     public string Type { get; set; }
     public string Name { get; set; }
