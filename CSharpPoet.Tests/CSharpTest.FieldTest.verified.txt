@@ -1,0 +1,4 @@
+public class TestClass
+{
+    internal static readonly int Field = 1;
+}

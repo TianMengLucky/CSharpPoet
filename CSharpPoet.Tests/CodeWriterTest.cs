@@ -1,9 +1,10 @@
 namespace CSharpPoet.Tests;
 
+[UsesVerify]
 public class CodeWriterTest
 {
     [Fact]
-    public void Test()
+    public Task Test()
     {
         using var stringWriter = new StringWriter();
         using var codeWriter = new CodeWriter(stringWriter);
@@ -19,14 +20,6 @@ public class CodeWriterTest
             codeWriter.WriteLine();
         }
 
-        Assert.Equal(
-            "namespace TestNamespace;\n" +
-            "\n" +
-            "public class TestClass\n" +
-            "{\n" +
-            "\n" +
-            "    public static readonly int TestField = 1;\n" +
-            "\n" +
-            "}\n", stringWriter.ToString());
+        return Verify(stringWriter.ToString());
     }
 }

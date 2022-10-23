@@ -1,0 +1,6 @@
+public enum TestEnum : sbyte
+{
+    A,
+    B,
+    C = 10,
+}

@@ -1,0 +1,7 @@
+public class TestClass
+{
+    private static int Method()
+    {
+        return 1;
+    }
+}

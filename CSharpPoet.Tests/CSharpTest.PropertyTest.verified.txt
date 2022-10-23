@@ -1,0 +1,14 @@
+public class TestClass
+{
+    public int AutoProperty { get; set; }
+    public int GetOnlyExpressionProperty => 1;
+    public int ExpressionProperty { get => 1; set => OnChanged(value); }
+
+    public int BlockProperty 
+    {
+        get
+        {
+            return 1;
+        }
+    }
+}

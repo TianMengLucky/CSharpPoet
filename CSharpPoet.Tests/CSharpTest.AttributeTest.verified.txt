@@ -1,0 +1,4 @@
+[Test(A, b: B, C = C)]
+public class TestClass
+{
+}
