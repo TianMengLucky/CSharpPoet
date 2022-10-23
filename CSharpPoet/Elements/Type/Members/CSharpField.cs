@@ -18,7 +18,7 @@ public class CSharpField : CSharpType.IMember
         Name = name;
     }
 
-    public CSharpField(string type, string name) : this(Visibility.Public, type, name)
+    public CSharpField(string type, string name) : this(Visibility.Private, type, name)
     {
     }
 
