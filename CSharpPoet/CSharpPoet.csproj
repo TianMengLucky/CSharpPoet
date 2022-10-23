@@ -7,7 +7,8 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-        <Version>0.1.0</Version>
+        <VersionPrefix>0.2.0</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
         <Description>A C# library for generating C# source files</Description>
         <Authors>js6pak</Authors>
 
