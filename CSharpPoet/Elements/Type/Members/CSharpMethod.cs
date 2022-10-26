@@ -4,6 +4,8 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
 {
     string IHasSeparator.Separator => "\n";
 
+    public Action<CodeWriter>? XmlComment { get; set; }
+
     public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
 
     public Visibility Visibility { get; set; }
@@ -34,6 +36,11 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
     public void WriteTo(CodeWriter writer)
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
+
+        if (XmlComment != null)
+        {
+            using (writer.XmlComment()) XmlComment(writer);
+        }
 
         foreach (var attribute in Attributes)
         {

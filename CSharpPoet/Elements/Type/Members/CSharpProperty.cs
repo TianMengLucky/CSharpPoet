@@ -4,6 +4,8 @@ public class CSharpProperty : CSharpType.IMember, IHasSeparator
 {
     string? IHasSeparator.Separator => IsMultiline ? "\n" : null;
 
+    public Action<CodeWriter>? XmlComment { get; set; }
+
     public Visibility Visibility { get; set; }
     public string Type { get; set; }
     public string Name { get; set; }
@@ -34,6 +36,11 @@ public class CSharpProperty : CSharpType.IMember, IHasSeparator
     public void WriteTo(CodeWriter writer)
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
+
+        if (XmlComment != null)
+        {
+            using (writer.XmlComment()) XmlComment(writer);
+        }
 
         writer.Write(Visibility);
         writer.Write(' ');

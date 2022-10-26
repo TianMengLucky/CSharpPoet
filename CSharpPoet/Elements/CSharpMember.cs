@@ -3,7 +3,7 @@ using System.Collections;
 namespace CSharpPoet;
 
 /// <summary>
-/// Represents all write-able C# member.
+/// Represents all write-able C# members.
 /// </summary>
 public interface ICSharpMember
 {

@@ -2,6 +2,8 @@ namespace CSharpPoet;
 
 public class CSharpField : CSharpType.IMember
 {
+    public Action<CodeWriter>? XmlComment { get; set; }
+
     public Visibility Visibility { get; set; }
     public string Type { get; set; }
     public string Name { get; set; }
@@ -27,6 +29,11 @@ public class CSharpField : CSharpType.IMember
     public void WriteTo(CodeWriter writer)
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
+
+        if (XmlComment != null)
+        {
+            using (writer.XmlComment()) XmlComment(writer);
+        }
 
         writer.Write(Visibility);
         writer.Write(' ');

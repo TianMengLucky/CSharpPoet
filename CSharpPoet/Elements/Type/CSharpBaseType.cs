@@ -7,6 +7,8 @@ public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFil
 {
     string IHasSeparator.Separator => "\n";
 
+    public Action<CodeWriter>? XmlComment { get; set; }
+
     public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
 
     public Visibility Visibility { get; set; }
@@ -42,6 +44,11 @@ public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFil
     public override void WriteTo(CodeWriter writer)
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
+
+        if (XmlComment != null)
+        {
+            using (writer.XmlComment()) XmlComment(writer);
+        }
 
         foreach (var attribute in Attributes)
         {

@@ -6,6 +6,7 @@ namespace CSharpPoet;
 public class CodeWriter : IndentedTextWriter
 {
     private bool _isInMultilineComment;
+    private bool _isInXmlComment;
 
     /// <inheritdoc />
     public CodeWriter(TextWriter writer, string tabString = DefaultTabString) : base(writer, tabString)
@@ -18,9 +19,10 @@ public class CodeWriter : IndentedTextWriter
         var tabsPending = TabsPending;
         base.OutputTabs();
 
-        if (tabsPending && _isInMultilineComment)
+        if (tabsPending)
         {
-            Write(" * ");
+            if (_isInMultilineComment) Write(" * ");
+            if (_isInXmlComment) Write("/// ");
         }
     }
 
@@ -80,6 +82,12 @@ public class CodeWriter : IndentedTextWriter
     public MultilineCommentScope MultilineComment() => new(this);
 
     /// <summary>
+    /// Starts a xml comment scope.
+    /// </summary>
+    /// <returns>Disposable <see cref="XmlCommentScope"/>.</returns>
+    public XmlCommentScope XmlComment() => new(this);
+
+    /// <summary>
     /// Starts an indent scope.
     /// </summary>
     /// <returns>Disposable <see cref="IndentScope"/>.</returns>
@@ -119,7 +127,31 @@ public class CodeWriter : IndentedTextWriter
     }
 
     /// <summary>
-    /// Represents a block scope. Dispose to end it.
+    /// Represents a xml comment scope. Dispose to end it.
+    /// </summary>
+    /// <remarks>You can only have one at a time.</remarks>
+    public readonly struct XmlCommentScope : IDisposable
+    {
+        private readonly CodeWriter _writer;
+
+        internal XmlCommentScope(CodeWriter writer)
+        {
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
+
+            if (_writer._isInXmlComment) throw new ArgumentException("Can't enter a xml comment twice");
+
+            _writer._isInXmlComment = true;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _writer._isInXmlComment = false;
+        }
+    }
+
+    /// <summary>
+    /// Represents an indent scope. Dispose to end it.
     /// </summary>
     public readonly struct IndentScope : IDisposable
     {
