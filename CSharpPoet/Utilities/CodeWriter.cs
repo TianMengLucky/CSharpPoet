@@ -40,6 +40,7 @@ public class CodeWriter : IndentedTextWriter
             Visibility.ProtectedInternal => "protected internal",
             Visibility.Private => "private",
             Visibility.PrivateProtected => "private protected",
+            Visibility.File => "file",
             _ => throw new ArgumentOutOfRangeException(nameof(visibility), visibility, null),
         });
     }

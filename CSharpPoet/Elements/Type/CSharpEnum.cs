@@ -1,3 +1,5 @@
+using CSharpPoet.Traits;
+
 namespace CSharpPoet;
 
 public class CSharpEnum : CSharpBaseType<CSharpEnum.Member>
@@ -11,7 +13,7 @@ public class CSharpEnum : CSharpBaseType<CSharpEnum.Member>
         UnderlyingType = underlyingType;
     }
 
-    public CSharpEnum(string name, CSharpEnumUnderlyingType underlyingType = CSharpEnumUnderlyingType.Int) : this(Visibility.Public, name, underlyingType)
+    public CSharpEnum(string name, CSharpEnumUnderlyingType underlyingType = CSharpEnumUnderlyingType.Int) : this(CSharpPoet.Visibility.Public, name, underlyingType)
     {
     }
 
@@ -35,8 +37,15 @@ public class CSharpEnum : CSharpBaseType<CSharpEnum.Member>
         });
     }
 
-    public class Member : ICSharpMember
+    public class Member : ICSharpMember,
+        IHasXmlComment,
+        IHasAttributes,
+        IHasName
     {
+        public Action<CodeWriter>? XmlComment { get; set; }
+
+        public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
+
         public string Name { get; set; }
 
         public string? Value { get; set; }
@@ -52,7 +61,10 @@ public class CSharpEnum : CSharpBaseType<CSharpEnum.Member>
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
 
-            writer.Write(CodeWriter.SanitizeIdentifier(Name));
+            this.WriteXmlCommentTo(writer);
+            this.WriteAttributesTo(writer);
+
+            this.WriteNameTo(writer);
 
             if (Value != null)
             {

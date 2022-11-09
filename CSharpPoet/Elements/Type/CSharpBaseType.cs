@@ -1,31 +1,43 @@
+using CSharpPoet.Traits;
+
 namespace CSharpPoet;
 
 /// <summary>
 /// Represents a C# type like enum or class-likes (class, interface, struct, record).  
 /// </summary>
-public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFile.IMember, CSharpType.IMember, IHasSeparator where TMember : ICSharpMember
+public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFile.IMember, CSharpType.IMember, IHasSeparator,
+    IHasXmlComment,
+    IHasAttributes,
+    IHasVisibility,
+    IHasModifiers,
+    IHasName
+    where TMember : ICSharpMember
 {
     string IHasSeparator.Separator => "\n";
 
+    #region Traits
+
     public Action<CodeWriter>? XmlComment { get; set; }
-
     public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
-
-    public Visibility Visibility { get; set; }
-
+    public Visibility? Visibility { get; set; }
+    public Modifiers Modifiers { get; set; }
     public string Name { get; set; }
 
-    public abstract string Type { get; }
+    #endregion
 
     #region Modifiers
 
-    public bool IsStatic { get; set; }
-
-    public bool IsUnsafe { get; set; }
-
-    public bool IsPartial { get; set; }
+    public bool IsStatic { get => this.HasModifier(Modifiers.Static); set => this.SetModifier(Modifiers.Static, value); }
+    public bool IsNew { get => this.HasModifier(Modifiers.New); set => this.SetModifier(Modifiers.New, value); }
+    public bool IsAbstract { get => this.HasModifier(Modifiers.Abstract); set => this.SetModifier(Modifiers.Abstract, value); }
+    public bool IsSealed { get => this.HasModifier(Modifiers.Sealed); set => this.SetModifier(Modifiers.Sealed, value); }
+    public bool IsReadonly { get => this.HasModifier(Modifiers.Readonly); set => this.SetModifier(Modifiers.Readonly, value); }
+    public bool IsUnsafe { get => this.HasModifier(Modifiers.Unsafe); set => this.SetModifier(Modifiers.Unsafe, value); }
+    public bool IsPartial { get => this.HasModifier(Modifiers.Partial); set => this.SetModifier(Modifiers.Partial, value); }
 
     #endregion
+
+    public abstract string Type { get; }
 
     protected CSharpBaseType(Visibility visibility, string name)
     {
@@ -33,7 +45,7 @@ public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFil
         Name = name;
     }
 
-    protected CSharpBaseType(string name) : this(Visibility.Public, name)
+    protected CSharpBaseType(string name) : this(CSharpPoet.Visibility.Public, name)
     {
     }
 
@@ -45,28 +57,17 @@ public abstract class CSharpBaseType<TMember> : CSharpMember<TMember>, CSharpFil
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
 
-        if (XmlComment != null)
-        {
-            using (writer.XmlComment()) XmlComment(writer);
-        }
+        this.WriteXmlCommentTo(writer);
+        this.WriteAttributesTo(writer);
 
-        foreach (var attribute in Attributes)
-        {
-            attribute.WriteTo(writer);
-            writer.WriteLine();
-        }
+        this.WriteVisibilityTo(writer);
 
-        writer.Write(Visibility);
-        writer.Write(' ');
-
-        if (IsStatic) writer.Write("static ");
-        if (IsUnsafe) writer.Write("unsafe ");
-        if (IsPartial) writer.Write("partial ");
+        this.WriteModifiersTo(writer);
 
         writer.Write(Type);
         writer.Write(' ');
 
-        writer.Write(CodeWriter.SanitizeIdentifier(Name));
+        this.WriteNameTo(writer);
 
         if (HasExtends)
         {

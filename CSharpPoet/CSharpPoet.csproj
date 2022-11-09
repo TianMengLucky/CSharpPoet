@@ -6,8 +6,9 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);CS1591</NoWarn> <!-- TODO doc everything -->
 
-        <VersionPrefix>0.2.0</VersionPrefix>
+        <VersionPrefix>0.3.0</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
         <Description>A C# library for generating C# source files</Description>
         <Authors>js6pak</Authors>

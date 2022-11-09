@@ -35,4 +35,9 @@ public enum Visibility
      * Access is limited to the containing class or types derived from the containing class within the current assembly. Available since C# 7.2.
      */
     PrivateProtected,
+
+    /**
+     * The declared type is only visible in the current source file. File scoped types are generally used for source generators.
+     */
+    File,
 }

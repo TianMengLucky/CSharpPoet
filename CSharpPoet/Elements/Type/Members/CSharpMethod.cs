@@ -1,22 +1,45 @@
+using CSharpPoet.Traits;
+
 namespace CSharpPoet;
 
-public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
+public class CSharpMethod : CSharpType.IMember, IHasSeparator,
+    IHasXmlComment,
+    IHasAttributes,
+    IHasVisibility,
+    IHasModifiers,
+    IHasName
 {
     string IHasSeparator.Separator => "\n";
 
+    #region Traits
+
     public Action<CodeWriter>? XmlComment { get; set; }
-
     public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
-
-    public Visibility Visibility { get; set; }
-    public string ReturnType { get; set; }
+    public Visibility? Visibility { get; set; }
+    public Modifiers Modifiers { get; set; }
     public string Name { get; set; }
+    public string? DefaultValue { get; set; }
+
+    #endregion
+
+    #region Modifiers
+
+    public bool IsStatic { get => this.HasModifier(Modifiers.Static); set => this.SetModifier(Modifiers.Static, value); }
+    public bool IsExtern { get => this.HasModifier(Modifiers.Extern); set => this.SetModifier(Modifiers.Extern, value); }
+    public bool IsNew { get => this.HasModifier(Modifiers.New); set => this.SetModifier(Modifiers.New, value); }
+    public bool IsVirtual { get => this.HasModifier(Modifiers.Virtual); set => this.SetModifier(Modifiers.Virtual, value); }
+    public bool IsAbstract { get => this.HasModifier(Modifiers.Abstract); set => this.SetModifier(Modifiers.Abstract, value); }
+    public bool IsSealed { get => this.HasModifier(Modifiers.Sealed); set => this.SetModifier(Modifiers.Sealed, value); }
+    public bool IsOverride { get => this.HasModifier(Modifiers.Override); set => this.SetModifier(Modifiers.Override, value); }
+    public bool IsUnsafe { get => this.HasModifier(Modifiers.Unsafe); set => this.SetModifier(Modifiers.Unsafe, value); }
+    public bool IsAsync { get => this.HasModifier(Modifiers.Async); set => this.SetModifier(Modifiers.Async, value); }
+    public bool IsPartial { get => this.HasModifier(Modifiers.Partial); set => this.SetModifier(Modifiers.Partial, value); }
+
+    #endregion
+
+    public string ReturnType { get; set; }
 
     public IList<CSharpParameter> Parameters { get; set; } = new List<CSharpParameter>();
-
-    public bool IsStatic { get; set; }
-    public bool IsPartial { get; set; }
-    public bool IsExtern { get; set; }
 
     public BodyType BodyType { get; set; } = BodyType.Block;
     public Action<CodeWriter>? Body { get; set; }
@@ -28,7 +51,7 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
         Name = name;
     }
 
-    public CSharpMethod(string returnType, string name) : this(Visibility.Public, returnType, name)
+    public CSharpMethod(string returnType, string name) : this(CSharpPoet.Visibility.Public, returnType, name)
     {
     }
 
@@ -37,28 +60,24 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
 
-        if (XmlComment != null)
+        this.WriteXmlCommentTo(writer);
+        this.WriteAttributesTo(writer);
+
+        this.WriteVisibilityTo(writer);
+
+        this.WriteModifiersTo(writer);
+
+        if (Name is ".ctor" or ".cctor")
         {
-            using (writer.XmlComment()) XmlComment(writer);
+            writer.Write(ReturnType);
         }
-
-        foreach (var attribute in Attributes)
+        else
         {
-            attribute.WriteTo(writer);
-            writer.WriteLine();
+            writer.Write(ReturnType);
+            writer.Write(' ');
+
+            this.WriteNameTo(writer);
         }
-
-        writer.Write(Visibility);
-        writer.Write(' ');
-
-        if (IsStatic) writer.Write("static ");
-        if (IsPartial) writer.Write("partial ");
-        if (IsExtern) writer.Write("extern ");
-
-        writer.Write(ReturnType);
-        writer.Write(' ');
-
-        writer.Write(CodeWriter.SanitizeIdentifier(Name));
 
         writer.Write('(');
         writer.WriteMembers(Parameters);
@@ -87,16 +106,22 @@ public class CSharpMethod : CSharpType.IMember, IHasAttributes, IHasSeparator
     }
 }
 
-public class CSharpParameter : ICSharpMember, IHasAttributes, IHasSeparator
+public class CSharpParameter : ICSharpMember, IHasSeparator,
+    IHasAttributes,
+    IHasType,
+    IHasName,
+    IHasDefaultValue
 {
     string IHasSeparator.Separator => ", ";
 
-    public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
+    #region Traits
 
+    public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
     public string Type { get; set; }
     public string Name { get; set; }
-
     public string? DefaultValue { get; set; }
+
+    #endregion
 
     public CSharpParameter(string type, string name)
     {
@@ -109,21 +134,12 @@ public class CSharpParameter : ICSharpMember, IHasAttributes, IHasSeparator
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
 
-        foreach (var attribute in Attributes)
-        {
-            attribute.WriteTo(writer);
-            writer.Write(" ");
-        }
+        this.WriteAttributesTo(writer);
 
-        writer.Write(Type);
-        writer.Write(' ');
+        this.WriteTypeTo(writer);
 
-        writer.Write(CodeWriter.SanitizeIdentifier(Name));
+        this.WriteNameTo(writer);
 
-        if (DefaultValue != null)
-        {
-            writer.Write(" = ");
-            writer.Write(DefaultValue);
-        }
+        this.WriteDefaultValueTo(writer);
     }
 }

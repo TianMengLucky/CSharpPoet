@@ -1,17 +1,6 @@
 namespace CSharpPoet;
 
 /// <summary>
-/// Represents a member that has attributes.
-/// </summary>
-public interface IHasAttributes : ICSharpMember
-{
-    /// <summary>
-    /// Gets or sets a list of attributes assigned to this member.
-    /// </summary>
-    public IList<CSharpAttribute> Attributes { get; set; }
-}
-
-/// <summary>
 /// Represents an attribute that is associated to a member.
 /// </summary>
 public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>

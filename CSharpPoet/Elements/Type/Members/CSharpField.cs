@@ -1,18 +1,39 @@
+using CSharpPoet.Traits;
+
 namespace CSharpPoet;
 
-public class CSharpField : CSharpType.IMember
+public class CSharpField : CSharpType.IMember,
+    IHasXmlComment,
+    IHasAttributes,
+    IHasVisibility,
+    IHasModifiers,
+    IHasType,
+    IHasName,
+    IHasDefaultValue
 {
-    public Action<CodeWriter>? XmlComment { get; set; }
+    #region Traits
 
-    public Visibility Visibility { get; set; }
+    public Action<CodeWriter>? XmlComment { get; set; }
+    public IList<CSharpAttribute> Attributes { get; set; } = new List<CSharpAttribute>();
+    public Visibility? Visibility { get; set; }
+    public Modifiers Modifiers { get; set; }
     public string Type { get; set; }
     public string Name { get; set; }
-
-    public bool IsStatic { get; set; }
-    public bool IsReadonly { get; set; }
-    public bool IsConst { get; set; }
-
     public string? DefaultValue { get; set; }
+
+    #endregion
+
+    #region Modifiers
+
+    public bool IsStatic { get => this.HasModifier(Modifiers.Static); set => this.SetModifier(Modifiers.Static, value); }
+    public bool IsNew { get => this.HasModifier(Modifiers.New); set => this.SetModifier(Modifiers.New, value); }
+    public bool IsReadonly { get => this.HasModifier(Modifiers.Readonly); set => this.SetModifier(Modifiers.Readonly, value); }
+    public bool IsUnsafe { get => this.HasModifier(Modifiers.Unsafe); set => this.SetModifier(Modifiers.Unsafe, value); }
+    public bool IsRequired { get => this.HasModifier(Modifiers.Required); set => this.SetModifier(Modifiers.Required, value); }
+    public bool IsVolatile { get => this.HasModifier(Modifiers.Volatile); set => this.SetModifier(Modifiers.Volatile, value); }
+    public bool IsConst { get => this.HasModifier(Modifiers.Const); set => this.SetModifier(Modifiers.Const, value); }
+
+    #endregion
 
     public CSharpField(Visibility visibility, string type, string name)
     {
@@ -21,7 +42,7 @@ public class CSharpField : CSharpType.IMember
         Name = name;
     }
 
-    public CSharpField(string type, string name) : this(Visibility.Private, type, name)
+    public CSharpField(string type, string name) : this(CSharpPoet.Visibility.Private, type, name)
     {
     }
 
@@ -30,28 +51,18 @@ public class CSharpField : CSharpType.IMember
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
 
-        if (XmlComment != null)
-        {
-            using (writer.XmlComment()) XmlComment(writer);
-        }
+        this.WriteXmlCommentTo(writer);
+        this.WriteAttributesTo(writer);
 
-        writer.Write(Visibility);
-        writer.Write(' ');
+        this.WriteVisibilityTo(writer);
 
-        if (IsStatic) writer.Write("static ");
-        if (IsReadonly) writer.Write("readonly ");
-        if (IsConst) writer.Write("const ");
+        this.WriteModifiersTo(writer);
 
-        writer.Write(Type);
-        writer.Write(' ');
+        this.WriteTypeTo(writer);
 
-        writer.Write(CodeWriter.SanitizeIdentifier(Name));
+        this.WriteNameTo(writer);
 
-        if (DefaultValue != null)
-        {
-            writer.Write(" = ");
-            writer.Write(DefaultValue);
-        }
+        this.WriteDefaultValueTo(writer);
 
         writer.WriteLine(';');
     }

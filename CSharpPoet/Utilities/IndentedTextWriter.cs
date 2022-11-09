@@ -39,7 +39,8 @@ public class IndentedTextWriter : TextWriter
     /// <summary>
     /// Gets or sets new line.
     /// </summary>
-    public override string? NewLine
+    [AllowNull]
+    public override string NewLine
     {
         get => _writer.NewLine;
         set => _writer.NewLine = value;
