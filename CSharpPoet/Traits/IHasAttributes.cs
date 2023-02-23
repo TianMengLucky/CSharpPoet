@@ -13,12 +13,12 @@ public interface IHasAttributes
 
 internal static class IHasAttributesExtensions
 {
-    public static void WriteAttributesTo(this IHasAttributes self, CodeWriter writer)
+    public static void WriteAttributesTo(this IHasAttributes self, CodeWriter writer, string separator = "\n")
     {
         foreach (var attribute in self.Attributes)
         {
             attribute.WriteTo(writer);
-            writer.WriteLine();
+            writer.Write(separator);
         }
     }
 }

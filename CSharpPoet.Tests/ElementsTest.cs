@@ -133,6 +133,17 @@ public class CSharpTest
             {
                 IsStatic = true,
                 Body = writer => writer.WriteLine("return 1;"),
+                Parameters =
+                {
+                    new CSharpParameter("string", "parameter")
+                    {
+                        Attributes =
+                        {
+                            new CSharpAttribute("Attribute1"),
+                            new CSharpAttribute("Attribute2"),
+                        },
+                    },
+                },
             },
         };
 

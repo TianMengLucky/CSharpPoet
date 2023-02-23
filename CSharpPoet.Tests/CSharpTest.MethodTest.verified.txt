@@ -1,6 +1,6 @@
 public class TestClass
 {
-    private static int Method()
+    private static int Method([Attribute1] [Attribute2] string parameter)
     {
         return 1;
     }

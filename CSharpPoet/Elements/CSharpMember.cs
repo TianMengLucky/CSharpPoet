@@ -18,7 +18,7 @@ public interface ICSharpMember
 /// Member that has to be separated from others using <see cref="Separator"/>.
 /// Used by <see cref="CodeWriter.WriteMembers{T}"/>.
 /// </summary>
-public interface IHasSeparator : ICSharpMember
+public interface IHasSeparator
 {
     /// <summary>
     /// Gets the separator.

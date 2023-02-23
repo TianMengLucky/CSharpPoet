@@ -134,7 +134,7 @@ public class CSharpParameter : ICSharpMember, IHasSeparator,
     {
         if (writer == null) throw new ArgumentNullException(nameof(writer));
 
-        this.WriteAttributesTo(writer);
+        this.WriteAttributesTo(writer, " ");
 
         this.WriteTypeTo(writer);
 
