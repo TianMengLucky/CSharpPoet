@@ -11,7 +11,10 @@ internal static class IHasXmlCommentExtensions
     {
         if (self.XmlComment != null)
         {
-            using (writer.XmlComment()) self.XmlComment(writer);
+            using (writer.XmlComment())
+            {
+                self.XmlComment(writer);
+            }
         }
     }
 }

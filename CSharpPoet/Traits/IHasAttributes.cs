@@ -1,12 +1,12 @@
 namespace CSharpPoet.Traits;
 
 /// <summary>
-/// Represents a member that has attributes.
+///     Represents a member that has attributes.
 /// </summary>
 public interface IHasAttributes
 {
     /// <summary>
-    /// Gets or sets a list of attributes assigned to this member.
+    ///     Gets or sets a list of attributes assigned to this member.
     /// </summary>
     public IList<CSharpAttribute> Attributes { get; set; }
 }

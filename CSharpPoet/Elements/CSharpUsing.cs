@@ -2,14 +2,6 @@ namespace CSharpPoet;
 
 public class CSharpUsing : ICSharpMember
 {
-    public string Target { get; set; }
-
-    public string? Alias { get; set; }
-
-    public bool IsGlobal { get; set; }
-
-    public bool IsStatic { get; set; }
-
     public CSharpUsing(string target)
     {
         Target = target;
@@ -21,10 +13,21 @@ public class CSharpUsing : ICSharpMember
         Target = target;
     }
 
+    public string Target { get; set; }
+
+    public string? Alias { get; set; }
+
+    public bool IsGlobal { get; set; }
+
+    public bool IsStatic { get; set; }
+
     /// <inheritdoc />
     public void WriteTo(CodeWriter writer)
     {
-        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (writer == null)
+        {
+            throw new ArgumentNullException(nameof(writer));
+        }
 
         if (IsGlobal)
         {

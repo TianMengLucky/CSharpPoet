@@ -1,41 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;netstandard2.0;</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>$(NoWarn);CS1591</NoWarn> <!-- TODO doc everything -->
-
+        <NoWarn>$(NoWarn);CS1591;</NoWarn> <!-- TODO doc everything -->
         <VersionPrefix>0.3.0</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
         <Description>A C# library for generating C# source files</Description>
         <Authors>js6pak</Authors>
-
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/js6pak/CSharpPoet</RepositoryUrl>
         <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
         <DebugType>embedded</DebugType>
-
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-
         <AnalysisMode>All</AnalysisMode>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
-        <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
-        <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
+        <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all"/>
+        <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
     </ItemGroup>
 
 </Project>

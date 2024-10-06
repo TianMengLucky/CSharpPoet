@@ -22,7 +22,7 @@ internal static class IHasModifiersExtensions
         [Modifiers.Volatile] = "volatile",
         [Modifiers.Async] = "async",
         [Modifiers.Partial] = "partial",
-        [Modifiers.Const] = "const",
+        [Modifiers.Const] = "const"
     };
 
     public static void WriteModifiersTo(this IHasModifiers self, CodeWriter writer)

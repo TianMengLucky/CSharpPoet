@@ -10,16 +10,16 @@ public class CSharpTest
         {
             Usings =
             {
-                new CSharpUsing("NamespaceB"),
-            },
+                new CSharpUsing("NamespaceB")
+            }
         })
         {
             Usings =
             {
                 new CSharpUsing("NamespaceA"),
                 new CSharpUsing("NamespaceA.A") { IsGlobal = true, IsStatic = true },
-                new CSharpUsing("AliasA", "NamespaceA"),
-            },
+                new CSharpUsing("AliasA", "NamespaceA")
+            }
         };
 
         return Verify(file.ToString());
@@ -28,11 +28,11 @@ public class CSharpTest
     [Fact]
     public Task EnumTest()
     {
-        var @enum = new CSharpEnum("TestEnum", underlyingType: CSharpEnumUnderlyingType.SignedByte)
+        var @enum = new CSharpEnum("TestEnum", CSharpEnumUnderlyingType.SignedByte)
         {
-            new("A"),
-            new("B"),
-            new("C", "10"),
+            new CSharpEnum.Member("A"),
+            new CSharpEnum.Member("B"),
+            new CSharpEnum.Member("C", "10")
         };
 
         return Verify(@enum.ToString());
@@ -59,7 +59,7 @@ public class CSharpTest
     {
         var @class = new CSharpClass("TestClass")
         {
-            Extends = { "ITestInterface" },
+            Extends = { "ITestInterface" }
         };
 
         return Verify(@class.ToString());
@@ -70,7 +70,7 @@ public class CSharpTest
     {
         var @class = new CSharpClass("TestClass")
         {
-            new CSharpClass("TestNested"),
+            new CSharpClass("TestNested")
         };
 
         return Verify(@class.ToString());
@@ -83,7 +83,7 @@ public class CSharpTest
         {
             new CSharpMultiLineComment(writer => writer.WriteLine("Test")),
             new CSharpBlankLine(),
-            new CSharpComment(writer => writer.WriteLine("Test")),
+            new CSharpComment(writer => writer.WriteLine("Test"))
         };
 
         return Verify(@class.ToString());
@@ -100,9 +100,9 @@ public class CSharpTest
                 {
                     new CSharpAttribute.Parameter("A"),
                     new CSharpAttribute.Parameter("b", "B"),
-                    new CSharpAttribute.Property("C", "C"),
-                },
-            },
+                    new CSharpAttribute.Property("C", "C")
+                }
+            }
         };
 
         return Verify(@class.ToString());
@@ -117,8 +117,8 @@ public class CSharpTest
             {
                 IsReadonly = true,
                 IsStatic = true,
-                DefaultValue = "1",
-            },
+                DefaultValue = new NumberValue<int>(1)
+            }
         };
 
         return Verify(@class.ToString());
@@ -140,11 +140,11 @@ public class CSharpTest
                         Attributes =
                         {
                             new CSharpAttribute("Attribute1"),
-                            new CSharpAttribute("Attribute2"),
-                        },
-                    },
-                },
-            },
+                            new CSharpAttribute("Attribute2")
+                        }
+                    }
+                }
+            }
         };
 
         return Verify(@class.ToString());
@@ -158,34 +158,34 @@ public class CSharpTest
             new CSharpProperty("int", "AutoProperty")
             {
                 Getter = new CSharpProperty.Accessor(),
-                Setter = new CSharpProperty.Accessor(),
+                Setter = new CSharpProperty.Accessor()
             },
             new CSharpProperty("int", "GetOnlyExpressionProperty")
             {
                 Getter = new CSharpProperty.Accessor
                 {
-                    Body = writer => writer.Write("1;"),
-                },
+                    Body = writer => writer.Write("1;")
+                }
             },
             new CSharpProperty("int", "ExpressionProperty")
             {
                 Getter = new CSharpProperty.Accessor
                 {
-                    Body = writer => writer.Write("1;"),
+                    Body = writer => writer.Write("1;")
                 },
                 Setter = new CSharpProperty.Accessor
                 {
-                    Body = writer => writer.Write("OnChanged(value);"),
-                },
+                    Body = writer => writer.Write("OnChanged(value);")
+                }
             },
             new CSharpProperty("int", "BlockProperty")
             {
                 Getter = new CSharpProperty.Accessor
                 {
                     BodyType = BodyType.Block,
-                    Body = writer => writer.WriteLine("return 1;"),
-                },
-            },
+                    Body = writer => writer.WriteLine("return 1;")
+                }
+            }
         };
 
         return Verify(@class.ToString());

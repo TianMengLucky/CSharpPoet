@@ -1,24 +1,27 @@
 namespace CSharpPoet;
 
 /// <summary>
-/// Represents a C# comment.
+///     Represents a C# comment.
 /// </summary>
 public class CSharpComment : CSharpFile.IMember, CSharpType.IMember
 {
-    /// <summary>
-    /// Gets or sets the value.
-    /// </summary>
-    public Action<CodeWriter> Value { get; set; }
-
     public CSharpComment(Action<CodeWriter> value)
     {
         Value = value;
     }
 
+    /// <summary>
+    ///     Gets or sets the value.
+    /// </summary>
+    public Action<CodeWriter> Value { get; set; }
+
     /// <inheritdoc />
     public virtual void WriteTo(CodeWriter writer)
     {
-        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (writer == null)
+        {
+            throw new ArgumentNullException(nameof(writer));
+        }
 
         writer.Write("// ");
         Value(writer);
@@ -35,7 +38,10 @@ public class CSharpMultiLineComment : CSharpComment
     /// <inheritdoc />
     public override void WriteTo(CodeWriter writer)
     {
-        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (writer == null)
+        {
+            throw new ArgumentNullException(nameof(writer));
+        }
 
         using (writer.MultilineComment())
         {

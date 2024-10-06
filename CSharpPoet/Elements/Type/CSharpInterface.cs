@@ -2,8 +2,6 @@ namespace CSharpPoet;
 
 public class CSharpInterface : CSharpType
 {
-    public override string Type => "interface";
-
     public CSharpInterface(Visibility visibility, string name) : base(visibility, name)
     {
     }
@@ -11,4 +9,6 @@ public class CSharpInterface : CSharpType
     public CSharpInterface(string name) : base(name)
     {
     }
+
+    public override string Type => "interface";
 }

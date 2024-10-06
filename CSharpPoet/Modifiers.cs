@@ -17,5 +17,5 @@ public enum Modifiers
     Volatile = 1 << 11,
     Async = 1 << 12,
     Partial = 1 << 13,
-    Const = 1 << 14,
+    Const = 1 << 14
 }

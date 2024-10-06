@@ -2,7 +2,7 @@ namespace CSharpPoet;
 
 // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/accessibility-levels
 /// <summary>
-/// Visibility of a C# member.
+///     Visibility of a C# member.
 /// </summary>
 public enum Visibility
 {
@@ -39,5 +39,5 @@ public enum Visibility
     /**
      * The declared type is only visible in the current source file. File scoped types are generally used for source generators.
      */
-    File,
+    File
 }

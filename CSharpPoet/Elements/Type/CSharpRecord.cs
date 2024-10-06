@@ -2,8 +2,6 @@ namespace CSharpPoet;
 
 public class CSharpRecord : CSharpType
 {
-    public override string Type => "record";
-
     public CSharpRecord(Visibility visibility, string name) : base(visibility, name)
     {
     }
@@ -11,6 +9,8 @@ public class CSharpRecord : CSharpType
     public CSharpRecord(string name) : base(name)
     {
     }
+
+    public override string Type => "record";
 
     // TODO primary constructor member
 }

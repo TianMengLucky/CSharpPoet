@@ -7,47 +7,41 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
+// ReSharper disable CheckNamespace
+
 namespace CSharpPoet;
 
 /// <summary>
-/// TextWriter with automatic indentation. 
+///     TextWriter with automatic indentation.
 /// </summary>
-public class IndentedTextWriter : TextWriter
+/// <inheritdoc />
+public class IndentedTextWriter(TextWriter writer, string tabString = IndentedTextWriter.DefaultTabString)
+    : TextWriter(CultureInfo.InvariantCulture)
 {
-    private readonly TextWriter _writer;
-    private readonly string _tabString;
     private int _indentLevelLevel;
-    private bool _tabsPending;
 
     /// <summary>
-    /// Gets default tab string.
+    ///     Gets default tab string.
     /// </summary>
     public const string DefaultTabString = "    ";
 
-    /// <inheritdoc/>
-    public IndentedTextWriter(TextWriter writer, string tabString = DefaultTabString) : base(CultureInfo.InvariantCulture)
-    {
-        _writer = writer ?? throw new ArgumentNullException(nameof(writer));
-        _tabString = tabString;
-    }
-
     /// <summary>
-    /// Gets encoding.
+    ///     Gets encoding.
     /// </summary>
-    public override Encoding Encoding => _writer.Encoding;
+    public override Encoding Encoding => InnerWriter.Encoding;
 
     /// <summary>
-    /// Gets or sets new line.
+    ///     Gets or sets new line.
     /// </summary>
     [AllowNull]
     public override string NewLine
     {
-        get => _writer.NewLine;
-        set => _writer.NewLine = value;
+        get => InnerWriter.NewLine;
+        set => InnerWriter.NewLine = value;
     }
 
     /// <summary>
-    /// Gets or sets the indentation level.
+    ///     Gets or sets the indentation level.
     /// </summary>
     public int IndentLevel
     {
@@ -56,70 +50,83 @@ public class IndentedTextWriter : TextWriter
     }
 
     /// <summary>
-    /// Gets the value indicating whether indentation should be written out.
+    ///     Gets the value indicating whether indentation should be written out.
     /// </summary>
-    protected bool TabsPending => _tabsPending;
+    protected bool TabsPending { get; private set; }
 
     /// <summary>
-    /// Gets the inner TextWriter.
+    ///     Gets the inner TextWriter.
     /// </summary>
-    public TextWriter InnerWriter => _writer;
+    public TextWriter InnerWriter { get; } = writer ?? throw new ArgumentNullException(nameof(writer));
 
-    /// <inheritdoc/>
-    public override void Close() => _writer.Close();
+    /// <inheritdoc />
+    public override void Close()
+    {
+        InnerWriter.Close();
+    }
 
 #pragma warning disable CA1816
 #pragma warning disable CA2215
-    /// <inheritdoc/>
-    protected override void Dispose(bool disposing) => _writer.Dispose();
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        InnerWriter.Dispose();
+    }
 
 #if NET
     /// <inheritdoc/>
-    public override ValueTask DisposeAsync() => _writer.DisposeAsync();
+    public override ValueTask DisposeAsync() => InnerWriter.DisposeAsync();
 #endif
 #pragma warning restore CA1816
 #pragma warning restore CA2215
 
-    /// <inheritdoc/>
-    public override void Flush() => _writer.Flush();
+    /// <inheritdoc />
+    public override void Flush()
+    {
+        InnerWriter.Flush();
+    }
 
-    /// <inheritdoc/>
-    public override Task FlushAsync() => _writer.FlushAsync();
+    /// <inheritdoc />
+    public override Task FlushAsync()
+    {
+        return InnerWriter.FlushAsync();
+    }
 
     /// <summary>
-    /// Outputs tabs to the underlying <see cref="TextWriter"/> based on the current <see cref="IndentLevel"/>.
+    ///     Outputs tabs to the underlying <see cref="TextWriter" /> based on the current <see cref="IndentLevel" />.
     /// </summary>
     protected virtual void OutputTabs()
     {
-        if (_tabsPending)
+        if (TabsPending)
         {
             for (var i = 0; i < _indentLevelLevel; i++)
             {
-                _writer.Write(_tabString);
+                InnerWriter.Write(tabString);
             }
 
-            _tabsPending = false;
+            TabsPending = false;
         }
     }
 
     /// <summary>
-    /// Asynchronously outputs tabs to the underlying <see cref="TextWriter"/> based on the current <see cref="IndentLevel"/>.
+    ///     Asynchronously outputs tabs to the underlying <see cref="TextWriter" /> based on the current
+    ///     <see cref="IndentLevel" />.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     protected virtual async Task OutputTabsAsync()
     {
-        if (_tabsPending)
+        if (TabsPending)
         {
             for (var i = 0; i < _indentLevelLevel; i++)
             {
-                await _writer.WriteAsync(_tabString).ConfigureAwait(false);
+                await InnerWriter.WriteAsync(tabString).ConfigureAwait(false);
             }
 
-            _tabsPending = false;
+            TabsPending = false;
         }
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(string? value)
     {
         if (value == "\n")
@@ -129,17 +136,17 @@ public class IndentedTextWriter : TextWriter
         }
 
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(bool value)
     {
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(char value)
     {
         if (value == '\n')
@@ -149,116 +156,116 @@ public class IndentedTextWriter : TextWriter
         }
 
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(char[]? buffer)
     {
         OutputTabs();
-        _writer.Write(buffer);
+        InnerWriter.Write(buffer);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(char[] buffer, int index, int count)
     {
         OutputTabs();
-        _writer.Write(buffer, index, count);
+        InnerWriter.Write(buffer, index, count);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(double value)
     {
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(float value)
     {
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(int value)
     {
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(long value)
     {
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(object? value)
     {
         OutputTabs();
-        _writer.Write(value);
+        InnerWriter.Write(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(string format, object? arg0)
     {
         OutputTabs();
-        _writer.Write(format, arg0);
+        InnerWriter.Write(format, arg0);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(string format, object? arg0, object? arg1)
     {
         OutputTabs();
-        _writer.Write(format, arg0, arg1);
+        InnerWriter.Write(format, arg0, arg1);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Write(string format, params object?[] arg)
     {
         OutputTabs();
-        _writer.Write(format, arg);
+        InnerWriter.Write(format, arg);
     }
 
     /// <summary>
-    /// Asynchronously writes the specified <see cref="char"/> to the underlying <see cref="TextWriter"/>, inserting
-    /// tabs at the start of every line.
+    ///     Asynchronously writes the specified <see cref="char" /> to the underlying <see cref="TextWriter" />, inserting
+    ///     tabs at the start of every line.
     /// </summary>
-    /// <param name="value">The <see cref="char"/> to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <param name="value">The <see cref="char" /> to write.</param>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public override async Task WriteAsync(char value)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteAsync(value).ConfigureAwait(false);
+        await InnerWriter.WriteAsync(value).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Asynchronously writes the specified number of <see cref="char"/>s from the specified buffer
-    /// to the underlying <see cref="TextWriter"/>, starting at the specified index, and outputting tabs at the
-    /// start of every new line.
+    ///     Asynchronously writes the specified number of <see cref="char" />s from the specified buffer
+    ///     to the underlying <see cref="TextWriter" />, starting at the specified index, and outputting tabs at the
+    ///     start of every new line.
     /// </summary>
     /// <param name="buffer">The array to write from.</param>
     /// <param name="index">Index in the array to stort writing at.</param>
     /// <param name="count">The number of characters to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public override async Task WriteAsync(char[] buffer, int index, int count)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteAsync(buffer, index, count).ConfigureAwait(false);
+        await InnerWriter.WriteAsync(buffer, index, count).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Asynchronously writes the specified string to the underlying <see cref="TextWriter"/>, inserting tabs at the
-    /// start of every line.
+    ///     Asynchronously writes the specified string to the underlying <see cref="TextWriter" />, inserting tabs at the
+    ///     start of every line.
     /// </summary>
     /// <param name="value">The string to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public override async Task WriteAsync(string? value)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteAsync(value).ConfigureAwait(false);
+        await InnerWriter.WriteAsync(value).ConfigureAwait(false);
     }
 
 #if NET
@@ -272,7 +279,7 @@ public class IndentedTextWriter : TextWriter
     public override async Task WriteAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
+        await InnerWriter.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -285,195 +292,198 @@ public class IndentedTextWriter : TextWriter
     public override async Task WriteAsync(StringBuilder? value, CancellationToken cancellationToken = default)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteAsync(value, cancellationToken).ConfigureAwait(false);
+        await InnerWriter.WriteAsync(value, cancellationToken).ConfigureAwait(false);
     }
 #endif
 
     /// <summary>
-    /// Writes a string followed by a line terminator to the text string or stream without indentation.
+    ///     Writes a string followed by a line terminator to the text string or stream without indentation.
     /// </summary>
     /// <param name="value">The string to write. If value is null, only the line terminator is written.</param>
     public void WriteLineNoTabs(string? value)
     {
-        _writer.WriteLine(value);
+        InnerWriter.WriteLine(value);
     }
 
     /// <summary>
-    /// Asynchronously writes the specified string to the underlying <see cref="TextWriter"/> without inserting tabs.
+    ///     Asynchronously writes the specified string to the underlying <see cref="TextWriter" /> without inserting tabs.
     /// </summary>
     /// <param name="s">The string to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public Task WriteLineNoTabsAsync(string? s)
     {
-        return _writer.WriteLineAsync(s);
+        return InnerWriter.WriteLineAsync(s);
     }
 
     /// <inheritdoc />
     public override void WriteLine(string? value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine()
     {
-        _writer.WriteLine();
-        _tabsPending = true;
+        InnerWriter.WriteLine();
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(bool value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(char value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(char[]? buffer)
     {
         OutputTabs();
-        _writer.WriteLine(buffer);
-        _tabsPending = true;
+        InnerWriter.WriteLine(buffer);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(char[] buffer, int index, int count)
     {
         OutputTabs();
-        _writer.WriteLine(buffer, index, count);
-        _tabsPending = true;
+        InnerWriter.WriteLine(buffer, index, count);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(double value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(float value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(int value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(long value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(object? value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(string format, object? arg0)
     {
         OutputTabs();
-        _writer.WriteLine(format, arg0);
-        _tabsPending = true;
+        InnerWriter.WriteLine(format, arg0);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(string format, object? arg0, object? arg1)
     {
         OutputTabs();
-        _writer.WriteLine(format, arg0, arg1);
-        _tabsPending = true;
+        InnerWriter.WriteLine(format, arg0, arg1);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(string format, params object?[] arg)
     {
         OutputTabs();
-        _writer.WriteLine(format, arg);
-        _tabsPending = true;
+        InnerWriter.WriteLine(format, arg);
+        TabsPending = true;
     }
 
     /// <inheritdoc />
     public override void WriteLine(uint value)
     {
         OutputTabs();
-        _writer.WriteLine(value);
-        _tabsPending = true;
+        InnerWriter.WriteLine(value);
+        TabsPending = true;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override async Task WriteLineAsync()
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteLineAsync().ConfigureAwait(false);
-        _tabsPending = true;
+        await InnerWriter.WriteLineAsync().ConfigureAwait(false);
+        TabsPending = true;
     }
 
     /// <summary>
-    /// Asynchronously writes the specified <see cref="char"/> to the underlying <see cref="TextWriter"/> followed by a line terminator, inserting tabs
-    /// at the start of every line.
+    ///     Asynchronously writes the specified <see cref="char" /> to the underlying <see cref="TextWriter" /> followed by a
+    ///     line terminator, inserting tabs
+    ///     at the start of every line.
     /// </summary>
     /// <param name="value">The character to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public override async Task WriteLineAsync(char value)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteLineAsync(value).ConfigureAwait(false);
-        _tabsPending = true;
+        await InnerWriter.WriteLineAsync(value).ConfigureAwait(false);
+        TabsPending = true;
     }
 
     /// <summary>
-    /// Asynchronously writes the specified number of characters from the specified buffer followed by a line terminator,
-    /// to the underlying <see cref="TextWriter"/>, starting at the specified index within the buffer, inserting tabs at the start of every line.
+    ///     Asynchronously writes the specified number of characters from the specified buffer followed by a line terminator,
+    ///     to the underlying <see cref="TextWriter" />, starting at the specified index within the buffer, inserting tabs at
+    ///     the start of every line.
     /// </summary>
     /// <param name="buffer">The buffer containing characters to write.</param>
     /// <param name="index">The index within the buffer to start writing at.</param>
     /// <param name="count">The number of characters to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public override async Task WriteLineAsync(char[] buffer, int index, int count)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteLineAsync(buffer, index, count).ConfigureAwait(false);
-        _tabsPending = true;
+        await InnerWriter.WriteLineAsync(buffer, index, count).ConfigureAwait(false);
+        TabsPending = true;
     }
 
     /// <summary>
-    /// Asynchronously writes the specified string followed by a line terminator to the underlying <see cref="TextWriter"/>, inserting
-    /// tabs at the start of every line.
+    ///     Asynchronously writes the specified string followed by a line terminator to the underlying
+    ///     <see cref="TextWriter" />, inserting
+    ///     tabs at the start of every line.
     /// </summary>
     /// <param name="value">The string to write.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     public override async Task WriteLineAsync(string? value)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteLineAsync(value).ConfigureAwait(false);
-        _tabsPending = true;
+        await InnerWriter.WriteLineAsync(value).ConfigureAwait(false);
+        TabsPending = true;
     }
 
 #if NET
@@ -484,11 +494,12 @@ public class IndentedTextWriter : TextWriter
     /// <param name="buffer">The characters to write.</param>
     /// <param name="cancellationToken">Token for canceling the operation.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public override async Task WriteLineAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default)
+    public override async Task WriteLineAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken =
+ default)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteLineAsync(buffer, cancellationToken).ConfigureAwait(false);
-        _tabsPending = true;
+        await InnerWriter.WriteLineAsync(buffer, cancellationToken).ConfigureAwait(false);
+        TabsPending = true;
     }
 
     /// <summary>
@@ -501,8 +512,8 @@ public class IndentedTextWriter : TextWriter
     public override async Task WriteLineAsync(StringBuilder? value, CancellationToken cancellationToken = default)
     {
         await OutputTabsAsync().ConfigureAwait(false);
-        await _writer.WriteLineAsync(value, cancellationToken).ConfigureAwait(false);
-        _tabsPending = true;
+        await InnerWriter.WriteLineAsync(value, cancellationToken).ConfigureAwait(false);
+        TabsPending = true;
     }
 #endif
 }

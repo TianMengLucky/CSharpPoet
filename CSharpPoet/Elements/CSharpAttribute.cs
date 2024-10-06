@@ -1,17 +1,12 @@
 namespace CSharpPoet;
 
 /// <summary>
-/// Represents an attribute that is associated to a member.
+///     Represents an attribute that is associated to a member.
 /// </summary>
 public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>
 {
     /// <summary>
-    /// Gets or sets the name.
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    /// Initializes an empty attribute.
+    ///     Initializes an empty attribute.
     /// </summary>
     /// <param name="name">The name of the custom attribute.</param>
     public CSharpAttribute(string name)
@@ -19,10 +14,18 @@ public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>
         Name = name;
     }
 
+    /// <summary>
+    ///     Gets or sets the name.
+    /// </summary>
+    public string Name { get; set; }
+
     /// <inheritdoc />
     public override void WriteTo(CodeWriter writer)
     {
-        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (writer == null)
+        {
+            throw new ArgumentNullException(nameof(writer));
+        }
 
         writer.Write('[');
 
@@ -39,29 +42,17 @@ public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>
     }
 
     /// <summary>
-    /// Represents an argument of <see cref="CSharpAttribute"/>.
+    ///     Represents an argument of <see cref="CSharpAttribute" />.
     /// </summary>
     public interface IArgument : ICSharpMember
     {
     }
 
     /// <summary>
-    /// Represents a parameter of an attribute constructor.
+    ///     Represents a parameter of an attribute constructor.
     /// </summary>
     public class Parameter : IArgument, IHasSeparator
     {
-        string IHasSeparator.Separator => ", ";
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        public string? Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        public string Value { get; set; }
-
         public Parameter(string value)
         {
             Value = value;
@@ -73,10 +64,23 @@ public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>
             Value = value;
         }
 
+        /// <summary>
+        ///     Gets or sets the name.
+        /// </summary>
+        public string? Name { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the value.
+        /// </summary>
+        public string Value { get; set; }
+
         /// <inheritdoc />
         public void WriteTo(CodeWriter writer)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
 
             if (Name != null)
             {
@@ -87,6 +91,8 @@ public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>
             writer.Write(Value);
         }
 
+        string IHasSeparator.Separator => ", ";
+
         public static implicit operator Parameter(string value)
         {
             return new Parameter(value);
@@ -94,36 +100,39 @@ public class CSharpAttribute : CSharpMember<CSharpAttribute.IArgument>
     }
 
     /// <summary>
-    /// Represents a property assignment of an attribute constructor.
+    ///     Represents a property assignment of an attribute constructor.
     /// </summary>
     public class Property : IArgument, IHasSeparator
     {
-        string IHasSeparator.Separator => ", ";
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        public string Value { get; set; }
-
         public Property(string name, string value)
         {
             Name = name;
             Value = value;
         }
 
+        /// <summary>
+        ///     Gets or sets the name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the value.
+        /// </summary>
+        public string Value { get; set; }
+
         /// <inheritdoc />
         public void WriteTo(CodeWriter writer)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
 
             writer.Write(Name);
             writer.Write(" = ");
             writer.Write(Value);
         }
+
+        string IHasSeparator.Separator => ", ";
     }
 }
