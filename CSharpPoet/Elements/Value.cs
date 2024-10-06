@@ -49,6 +49,14 @@ public class NewValue(string className, params string[] parameters) : Value("new
         }
 
         _Value += "(";
+        foreach (var parameter in Parameters)
+        {
+            _Value += parameter;
+            if (Parameters.Last() != parameter)
+            {
+                _Value += ", ";
+            }
+        }
         _Value += ")";
         base.Write(writer);
     }

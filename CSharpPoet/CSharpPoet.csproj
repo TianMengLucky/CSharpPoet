@@ -7,12 +7,11 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);CS1591;</NoWarn> <!-- TODO doc everything -->
-        <VersionPrefix>0.3.0</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
+        <Version>0.3.2</Version>
         <Description>A C# library for generating C# source files</Description>
-        <Authors>js6pak</Authors>
+        <Authors>js6pak;MengChu</Authors>
         <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/js6pak/CSharpPoet</RepositoryUrl>
+        <RepositoryUrl>https://github.com/TianMengLucky/CSharpPoet</RepositoryUrl>
         <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <DebugType>embedded</DebugType>
@@ -22,6 +21,9 @@
         <AnalysisMode>All</AnalysisMode>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <MyPackageName>CSharpPoet.MengChu</MyPackageName>
+        <PackageId>$(MyPackageName)</PackageId>
+        <AssemblyName>$(MyPackageName)</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
